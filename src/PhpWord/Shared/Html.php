@@ -91,7 +91,7 @@ class Html
         }
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = $preserveWhiteSpace;
-        $dom->loadXML($html);
+        $dom->loadHTML($html);
         static::$xpath = new DOMXPath($dom);
         $node = $dom->getElementsByTagName('body');
 

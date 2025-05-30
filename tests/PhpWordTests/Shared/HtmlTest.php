@@ -1036,6 +1036,24 @@ HTML;
     }
 
     /**
+     * Test parsing of unclosed img tag.
+     */
+    public function testParseUnclosedImageTag(): void
+    {
+        $src = self::getRemoteImageUrl();
+
+        $phpWord = new PhpWord();
+        $section = $phpWord->addSection();
+        $html = '<p><img src="' . $src . '"></p>';
+        Html::addHtml($section, $html);
+
+        $doc = TestHelperDOCX::getDocument($phpWord, 'Word2007');
+
+        $baseXpath = '/w:document/w:body/w:p/w:r';
+        self::assertTrue($doc->elementExists($baseXpath . '/w:pict/v:shape'));
+    }
+
+    /**
      * Test parsing embedded image.
      */
     public function testParseEmbeddedImage(): void
