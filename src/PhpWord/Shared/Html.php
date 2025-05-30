@@ -89,11 +89,21 @@ class Html
         if (\PHP_VERSION_ID < 80000) {
             $orignalLibEntityLoader = libxml_disable_entity_loader(true);
         }
-        $dom = new DOMDocument();
-        $dom->preserveWhiteSpace = $preserveWhiteSpace;
-        $dom->loadHTML($html);
-        static::$xpath = new DOMXPath($dom);
-        $node = $dom->getElementsByTagName('body');
+
+        $htmlDom = new DOMDocument();
+        $htmlDom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        $validXml = $htmlDom->saveXML($htmlDom->documentElement);
+        if (false === $validXml) {
+            throw new Exception('Could not convert HTML to valid XML');
+        }
+
+        $xmlDom = new DOMDocument();
+        $xmlDom->preserveWhiteSpace = $preserveWhiteSpace;
+        $xmlDom->loadXML($validXml);
+
+        static::$xpath = new DOMXPath($xmlDom);
+        $node = $xmlDom->getElementsByTagName('body');
 
         static::parseNode($node->item(0), $element);
         if (\PHP_VERSION_ID < 80000) {
