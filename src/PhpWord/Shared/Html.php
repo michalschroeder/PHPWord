@@ -1321,11 +1321,6 @@ class Html
         return trim($rgb, '# ');
     }
 
-    /**
-     * @param string $xml
-     *
-     * @return bool
-     */
     private static function isRubyCode(string $xml): bool
     {
         $pattern = '/<ruby\b([^>]*)>(.*?)<\/ruby>/is';
@@ -1339,7 +1334,6 @@ class Html
      * @param string $html The HTML content to convert
      *
      * @return string The well-formed XML
-     * @throws Exception If conversion fails
      */
     protected static function convertHtmlToXml(string $html): string
     {
