@@ -96,12 +96,11 @@ class Html
             $validXml = self::convertHtmlToXml($html);
         }
 
-        $xmlDom = new DOMDocument();
-        $xmlDom->preserveWhiteSpace = $preserveWhiteSpace;
-        $xmlDom->loadXML($validXml);
-
-        static::$xpath = new DOMXPath($xmlDom);
-        $node = $xmlDom->getElementsByTagName('body');
+        $dom = new DOMDocument();
+        $dom->preserveWhiteSpace = $preserveWhiteSpace;
+        $dom->loadXML($validXml);
+        static::$xpath = new DOMXPath($dom);
+        $node = $dom->getElementsByTagName('body');
 
         static::parseNode($node->item(0), $element);
         if (\PHP_VERSION_ID < 80000) {
@@ -1322,6 +1321,11 @@ class Html
         return trim($rgb, '# ');
     }
 
+    /**
+     * @param string $xml
+     *
+     * @return bool
+     */
     private static function isRubyCode(string $xml): bool
     {
         $pattern = '/<ruby\b([^>]*)>(.*?)<\/ruby>/is';
@@ -1330,9 +1334,10 @@ class Html
     }
 
     /**
-     * Converts HTML to well-formed XML
+     * Converts HTML to well-formed XML.
      *
      * @param string $html The HTML content to convert
+     *
      * @return string The well-formed XML
      * @throws Exception If conversion fails
      */
