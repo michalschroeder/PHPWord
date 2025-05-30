@@ -90,12 +90,10 @@ class Html
             $orignalLibEntityLoader = libxml_disable_entity_loader(true);
         }
 
-        $htmlDom = new DOMDocument();
-        $htmlDom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-
-        $validXml = $htmlDom->saveXML($htmlDom->documentElement);
-        if (false === $validXml) {
-            throw new Exception('Could not convert HTML to valid XML');
+        if (self::isRubyCode($html)) {
+            $validXml = $html;
+        } else {
+            $validXml = self::convertHtmlToXml($html);
         }
 
         $xmlDom = new DOMDocument();
@@ -1322,6 +1320,33 @@ class Html
         }
 
         return trim($rgb, '# ');
+    }
+
+    private static function isRubyCode(string $xml): bool
+    {
+        $pattern = '/<ruby\b([^>]*)>(.*?)<\/ruby>/is';
+
+        return preg_match($pattern, $xml, $matches) === 1;
+    }
+
+    /**
+     * Converts HTML to well-formed XML
+     *
+     * @param string $html The HTML content to convert
+     * @return string The well-formed XML
+     * @throws Exception If conversion fails
+     */
+    protected static function convertHtmlToXml(string $html): string
+    {
+        $htmlDom = new DOMDocument();
+        $htmlDom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        $validXml = $htmlDom->saveXML($htmlDom->documentElement);
+        if (false === $validXml) {
+            throw new Exception('Could not convert HTML to valid XML');
+        }
+
+        return $validXml;
     }
 
     /**
