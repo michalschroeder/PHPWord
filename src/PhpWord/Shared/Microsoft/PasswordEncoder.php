@@ -125,7 +125,6 @@ class PasswordEncoder
             throw new Exception('Failed to convert password to UCS-2LE');
         }
 
-
         $byteChars = [];
         for ($i = 0; $i < mb_strlen($password); ++$i) {
             $byteChars[$i] = ord(substr($passUtf8, $i * 2, 1));

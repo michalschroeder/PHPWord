@@ -144,7 +144,6 @@ class Text
      * @param null|string $value
      *
      * @return ?string
-     * @throws Exception
      */
     public static function toUTF8($value = '')
     {
